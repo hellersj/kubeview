@@ -1,0 +1,104 @@
+1 Create a namespace in kubernetes:
+
+## k create namespace kvlabs
+
+2 Check the current namespace: 
+
+## kubectl config view --minify --output 'jsonpath={..namespace}'
+
+3 Set the current namespace: 
+
+## kubectl  config set-context --current --namespace=<namespace>
+
+## kubectl  config set-context --current --namespace=kvlabs
+
+******************************************************************************************************
+
+Installation Steps with helm
+
+# helm repo add kv2 https://code.benco.io/kubeview/deploy/helm
+
+# helm repo update
+
+# helm install kubeview kv2/kubeview --namespace kvlabs
+╭────────────────────────────────────────────────╮
+│   🌍 KubeView was deployed to Kubernetes! 🚀   │
+╰────────────────────────────────────────────────╯
+
+
+
+Note: In my case I am using docker. After installing kubeview with helm, run:
+
+  -v $HOME/.kube:/root/.kube \
+  -p 8000:8000 \
+  ghcr.io/benc-uk/kubeview:latest
+
+
+And open the kubeview console in the browers as:
+
+http://vmip:port/?ns=yournamespace
+
+http://9.30.108.38:8000/?ns=kvlabs
+
+*********************************************************************************
+
+To get the URL to open KubeView, run the following:
+
+  export SERVICE_IP=$(kubectl get svc --namespace kvlabs kubeview -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:8000
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available!
+        You can watch the status of by running 'kubectl get --namespace kvlabs svc -w kubeview'
+
+
+# Confirm everything is up and running
+
+kubectl get pods -n kubeview
+kubectl get svc -n kubeview
+
+
+NOTE: what you should use depends on the Service type that was created in your namespace: 
+
+When you installed with Helm, KubeView gave you those instructions because the chart creates a LoadBalancer Service by default.
+
+ # If the Service is LoadBalancer: 
+
+kubectl get svc -n <namespace>
+
+NAME       TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)         AGE
+kubeview   LoadBalancer   10.0.1.123    <pending>       8000:32123/TCP  2m
+
+- On clouds like Azure, AWS, GCP, the EXTERNAL-IP field will be populated with a public or private IP from the cloud load balancer. 
+In that case, the command from the chart works:
+
+export SERVICE_IP=$(kubectl get svc --namespace kvlabs <namespace> -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo http://$SERVICE_IP:8000
+
+This will give you the external URL.!!
+
+If the EXTERNAL-IP stays <pending>, it means your cluster doesn’t have a cloud load balancer integration (common in OVA, minikube, kind, etc.).
+
+
+
+ # If the Service is ClusterIP (default in local clusters without LB)
+
+In this case, there’s no external IP. The right option is:
+
+kubectl port-forward svc/kubeview 8080:80 -n kvlabs
+
+And then you access it in your browser at:
+
+http://localhost:8080
+
+
+
+
+# Practical recommendation
+
+If you’re on a local cluster (OVA, minikube, kind, CRC, lab), use port-forward.
+
+If you’re on a cloud cluster with a real LoadBalancer, use the SERVICE_IP method.
+
+
+
+
