@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-web
+  labels:
+    app: app-deploy
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3         # permite 3 pods extra (coexistencia de 2 RS con 3 pods)
+      maxUnavailable: 0   # no bajamos pods viejos hasta que suban los nuevos
+  selector:
+    matchLabels:
+      app: app-deploy
+  template:
+    metadata:
+      labels:
+        app: app-deploy
