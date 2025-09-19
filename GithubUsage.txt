@@ -1,0 +1,70 @@
+# Steps to link your local folder to your GitHub repo
+
+# Go to your project folder:
+cd "C:\Users\HellerEliezerSaenzJa\Documents\2025\Heller\kubeviewlabs"
+
+# Initialize Git:
+git init
+
+# Add your files to staging:
+git add .
+
+# Make the first commit:
+git commit -m "Initial commit"
+
+# Add the remote (your GitHub repo):
+git remote add origin https://github.com/hellersj/kubeview.git
+
+# Rename your branch to main (if not already):
+git branch -M main
+
+# Push to GitHub:
+git push -u origin main
+
+Notes:
+
+- If GitHub asks for credentials, you’ll need either a personal access token (recommended) or GitHub CLI. Password auth is deprecated.
+- If you want to avoid entering credentials all the time, you can set up SSH keys or cache HTTPS credentials.
+
+**************************************************************************************************************************************
+
+# Update your GitHub repo after changes
+
+# Check status (see what changed):
+git status
+
+# Stage the new/modified files:
+- To add everything:
+git add .
+
+- To add a specific file:
+git add filename.yaml
+
+# Commit with a message:
+git commit -m "Add new Kubernetes manifest for deployment"
+
+# Push to your GitHub repo (main branch):
+git push origin main
+
+**************************************************************************************************************************************
+
+Note:
+
+# Quick shorthand:
+
+git add .
+git commit -m "Your message"
+git push
+
+# If you only want to update a single file, you can:
+git add file.yaml
+git commit -m "Update file.yaml"
+git push
+
+# To check what branch you’re on: (You should see * main.)
+git branch
+
+If you ever forget to -u on the first push, you can always use:
+git push -u origin main
+
+** The -u sets tracking so later git push alone works.
