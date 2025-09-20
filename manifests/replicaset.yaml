@@ -14,9 +14,10 @@ spec:
       labels:
         app: app-rs
     spec:
-      serviceAccountName: app-sa
       containers:
         - name: web
-          image: nginx:1.25
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+
