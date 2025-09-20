@@ -1,6 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-solo
-  labels:
-    app: app-solo
+  name: nginx-local
+  namespace: kvlabs
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+
